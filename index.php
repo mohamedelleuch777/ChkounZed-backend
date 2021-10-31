@@ -1,5 +1,4 @@
 <?php
-echo 'welcome...<br />';
-$url = $_SERVER[REQUEST_URI];
 
-echo $url;
+require 'libs/Bootstrap.php';
+$app = new Bootstrap();
