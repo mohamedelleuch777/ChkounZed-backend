@@ -1,6 +1,6 @@
 <?php
 
-class Bootstrap {
+class MVC_App {
     function __construct () {
         $url = $_SERVER['REQUEST_URI'];
         $url = rtrim($url);

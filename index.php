@@ -1,5 +1,6 @@
 <?php
 
-require 'libs/Bootstrap.php';
+require 'libs/MVC_App.php';
 require 'libs/Controller.php';
-$app = new Bootstrap();
+require 'libs/Model.php';
+$app = new MVC_App();
