@@ -9,8 +9,7 @@ class  Users extends Controller {
         $this->loadModel('m_Users');
         $users = new m_Users();
         $output = $this->Post();
-        //echo json_encode($output);
-        return $output; 
+        return $users->CreateUser($output);
     }
 
     public function UpdateUser() {
@@ -21,7 +20,11 @@ class  Users extends Controller {
         echo 'call Users.RemoveUser()';
     }
 
-    public function GetUserData() {
-        echo 'call Users.GetUserData()';
+    public function GetUser() {
+        $this->loadModel('m_Users');
+        $users = new m_Users();
+        $output = $this->Post();
+        //echo json_encode($output);
+        return $users->GetUserByEmail($output);
     }
 }

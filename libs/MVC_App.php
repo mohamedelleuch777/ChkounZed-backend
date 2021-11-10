@@ -35,6 +35,14 @@ class MVC_App {
             echo json_encode(get_object_vars($var));
         } else if($varType=='array') {
             echo json_encode($var);
+        } else if($varType=='string') {
+            echo '{
+                "result": '.$var.'
+            }';
+        } else if($varType=='boolean') {
+            echo '{
+                "result": '.($var?"true":"false").'
+            }';
         } else {
             echo "type not accepted: $varType";
         }

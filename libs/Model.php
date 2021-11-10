@@ -3,13 +3,27 @@
 
 
 class Model {
-    private $db;
+    public $db;
     function __construct() {
         // instantiate database
-        $db = new MySQL_Query("127.0.0.1","root","password","chkoun_zed");
+        $this->db = new MySQL_Query("remotemysql.com","O4pKtnrYIk","hd0iDziUDK","O4pKtnrYIk");
+        return $this->db;
     }
 
-    function GetUser() {
-        
+    function ExecQuery($sqlCode) {
+        $res = $this->db->ExecSql($sqlCode);
+        if(!$res) {
+            return $this->db->GetError();
+        }
+        $resList = [];
+        while($this->db->AvailableResult()) {
+            array_push($resList, $this->db->GetObject());
+        }
+        return $resList;
+    }
+
+    function ExecQueryNoFetch($sqlCode) {
+        $res = $this->db->ExecSql($sqlCode);
+        return $res;
     }
 }
