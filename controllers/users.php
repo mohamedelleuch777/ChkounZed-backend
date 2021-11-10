@@ -8,8 +8,9 @@ class  Users extends Controller {
     public function CreateUser() {
         $this->loadModel('m_Users');
         $users = new m_Users();
-        $output = $this->ReadPostData();
-        echo json_encode($output);
+        $output = $this->Post();
+        //echo json_encode($output);
+        return $output; 
     }
 
     public function UpdateUser() {
@@ -22,12 +23,5 @@ class  Users extends Controller {
 
     public function GetUserData() {
         echo 'call Users.GetUserData()';
-    }
-
-    private function ReadPostData() {
-        $my_POST = json_decode(file_get_contents('php://input'));
-
-        $my_POST = json_decode(json_encode($my_POST), true);
-        return $my_POST;
     }
 }

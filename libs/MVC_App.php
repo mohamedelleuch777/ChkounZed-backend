@@ -20,13 +20,24 @@ class MVC_App {
         $controller = new $url[0];
 
         if(isset($url[2])) {
-            $controller->{$url[1]}($url[2]);
+            $this->Convert2Json($controller->{$url[1]}($url[2]));
         } else {
             if(isset($url[1])) {
-                $controller->{$url[1]}();
+                $this->Convert2Json($controller->{$url[1]}());
             }
         }
 
+    }
+
+    function Convert2Json($var) {
+        $varType = gettype($var);
+        if($varType=='object') {
+            echo json_encode(get_object_vars($var));
+        } else if($varType=='array') {
+            echo json_encode($var);
+        } else {
+            echo "type not accepted: $varType";
+        }
     }
 }
 
