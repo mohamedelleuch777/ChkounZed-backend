@@ -22,9 +22,17 @@ class MVC_App {
         if(isset($url[2])) {
             $this->Convert2Json($controller->{$url[1]}($url[2]));
         } else {
+            /*
             if(isset($url[1])) {
-                $this->Convert2Json($controller->{$url[1]}());
-            }
+                 $this->Convert2Json($controller->{$url[1]}());
+            } 
+            */
+            $errMsg = (object)[
+                'success' => false,
+                'message' => "This method only accept POST",
+                'request' => $_SERVER['REQUEST_METHOD'],
+            ];
+            $this->Convert2Json($errMsg);
         }
 
     }
