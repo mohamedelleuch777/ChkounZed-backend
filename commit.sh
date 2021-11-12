@@ -84,4 +84,4 @@ tmp=$(sed 's|version: ".*"|version: "'${VER}'"|g' src/components/setting.js); pr
 
 
 printf "${COLOR_BLUE}version: ${VER}${COLOR_NORMAL}\n"
-printf "${COLOR_RED}Git operations finished...${COLOR_NORMAL}\n"
+printf "${COLOR_RED}Git operations finished...${COLOR_NORMAL}\n" 
