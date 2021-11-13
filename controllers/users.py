@@ -9,3 +9,6 @@ class Users :
     
     def GetUser(self):
         return config.GetPostArgs()
+
+    def CreateUser(self):
+        return "bye"

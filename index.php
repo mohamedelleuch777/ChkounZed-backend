@@ -8,6 +8,9 @@ $requestType = $_SERVER['REQUEST_METHOD'];
 $postData = json_encode(json_decode(file_get_contents('php://input')));
 file_put_contents("php.input",$postData);
 $urlpath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-$urlParameters = $_SERVER['QUERY_STRING'];
+$urlParameters = '';
+if(isset($_SERVER['QUERY_STRING'])){
+    $urlParameters = $_SERVER['QUERY_STRING'];
+}
 $res = exec("python3 index.py $requestType $urlpath \"$urlParameters\"");
 echo $res; 

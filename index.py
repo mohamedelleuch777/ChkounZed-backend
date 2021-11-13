@@ -4,7 +4,7 @@ import php
 
 
 requestedClassName = config.REQUEST_URL.split('/')[1]
-requestedMethodName = config.REQUEST_URL.split('/')[2].split('?')[0]
+requestedMethodName = config.REQUEST_URL.split('/')[2]
 requestedArgs = config.REQUEST_ARGS
 
 

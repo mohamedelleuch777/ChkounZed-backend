@@ -3,7 +3,6 @@ import os
 import importlib
 
 
-
 prodMode = True
 
 if prodMode:
@@ -11,32 +10,9 @@ if prodMode:
     REQUEST_URL = sys.argv[2]
     REQUEST_ARGS = sys.argv[3]
 else:
-
     REQUEST_TYPE = "GET"
-    REQUEST_URL = "/Users/run?ytd=ewgw&FAFS"
-    REQUEST_ARGS = ''
-    if len(REQUEST_URL.split('?')) >= 2:
-        REQUEST_ARGS = REQUEST_URL.split('?')[1]
-
-
-
-
-        
-
-# print(REQUEST_ARGS)
-
-# if len(REQUEST_URL.split('?')) >= 2:
-#     REQUEST_ARGS = REQUEST_URL.split('?')[1]
-# else:
-#     REQUEST_ARGS = ""
-
-
-# def importModule1(moduleName):
-#     try:
-#         module = __import__(moduleName)
-#     except ImportError:
-#         return None
-#     return module
+    REQUEST_URL = "/Users/run"
+    REQUEST_ARGS = 'ytd=ewgw&FAFS'
 
 
 def importModule(full_path_to_module):
