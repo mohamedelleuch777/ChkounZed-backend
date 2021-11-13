@@ -1,11 +1,11 @@
-
+import config
 
 
 class Users : 
     
     
     def run(self):
-        return 'np'
+        return config.REQUEST_ARGS
     
     def GetUser(self):
-        return 'fa'
+        return config.GetPostArgs()
