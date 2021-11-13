@@ -5,4 +5,7 @@ class Users :
     
     
     def run(self):
-        return '3asba'
+        return 'np'
+    
+    def GetUser(self):
+        return 'fa'
