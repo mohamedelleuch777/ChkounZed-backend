@@ -85,7 +85,10 @@ elif [[ $SOURCES = "php" ]]
 then
     printf "${COLOR_GREEN}Deploying only PHP source files (API)${COLOR_NORMAL}\n"
     printf "${COLOR_CYAN}Deploying PHP now...${COLOR_NORMAL}\n"
-    scp -r "${PWD}" ${FTP_USER}@${FTP_SERVER}:
+    rsync --password-file=<(echo "${FTP_PASS}") --progress -avzp --exclude-from='.deployignore' -e ssh "${PWD}"  ${FTP_USER}@${FTP_SERVER}:
 fi
 # tmp=$(sed 's|serverUrl: ".*"|serverUrl: "'${LOCAL_ADDRESS}'"|g' src/components/setting.js); printf "%s" "$tmp" >src/components/setting.js
 printf "${COLOR_RED}Deployment finished...${COLOR_NORMAL}\n"
+
+
+# rsync -avzp --exclude-from='.deployignore' -e ssh "${PWD}"  u106260247@access888703219.webspace-data.io:
