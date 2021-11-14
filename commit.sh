@@ -80,7 +80,7 @@ VER=${VER//[-]/.}
 
 # Strings:
 #jq --arg a "${version}" '.version = $a' src/components/settings.js > "tmp" && mv "tmp" src/components/settings1.js
-tmp=$(sed 's|version: ".*"|version: "'${VER}'"|g' src/components/setting.js); printf "%s" "$tmp" >src/components/setting.js
+#tmp=$(sed 's|version: ".*"|version: "'${VER}'"|g' src/components/setting.js); printf "%s" "$tmp" >src/components/setting.js
 
 
 printf "${COLOR_BLUE}version: ${VER}${COLOR_NORMAL}\n"
