@@ -16,8 +16,10 @@ class Users( config.Controller ) :
         return self.cM_Users.ListAllUsers()
     
     def GetUser(self):
-        params = config.REQUEST_ARGS.split('&')
-        return config.GetPostArgs()
+        self.ForceMethod('GET')
+        email = self.GetParam('email')
+        return self.cM_Users.GetUserByEmail(email)
+        
 
     def CreateUser(self):
         return "bye"

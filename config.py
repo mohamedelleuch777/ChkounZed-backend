@@ -11,8 +11,8 @@ if prodMode:
     REQUEST_ARGS = sys.argv[3]
 else:
     REQUEST_TYPE = "GET"
-    REQUEST_URL = "/Users/rusn"
-    REQUEST_ARGS = 'ytd=ewgw&FAFS'
+    REQUEST_URL = "/Users/GetUser"
+    REQUEST_ARGS = 'email=ewgw&FAFS&id=5&alt=fnwvehver'
 
 
 def ThrowException(str):
@@ -32,6 +32,13 @@ class Controller:
     @staticmethod
     def InexistantRequest():
         ThrowException('This method does not exist')
+
+    def GetParam(self, paramName):
+        params = REQUEST_ARGS.split('&')
+        for item in params:
+            if item.startswith(paramName):
+                return item.split('=')[1]
+        return None
 
 
 
