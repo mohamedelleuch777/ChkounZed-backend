@@ -11,8 +11,28 @@ if prodMode:
     REQUEST_ARGS = sys.argv[3]
 else:
     REQUEST_TYPE = "GET"
-    REQUEST_URL = "/Users/run"
+    REQUEST_URL = "/Users/rusn"
     REQUEST_ARGS = 'ytd=ewgw&FAFS'
+
+
+def ThrowException(str):
+    print(str)
+    sys.exit()
+
+
+class Controller:
+    def ForceMethod(self, methodType):
+        if REQUEST_TYPE != methodType:
+            ThrowException('This method only accept '+methodType+' requests')
+    
+    @staticmethod
+    def BlockRequests():
+        ThrowException('This method is not callable')
+    
+    @staticmethod
+    def InexistantRequest():
+        ThrowException('This method does not exist')
+
 
 
 def importModule(full_path_to_module):
