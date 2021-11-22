@@ -12,5 +12,11 @@ $urlParameters = '';
 if(isset($_SERVER['QUERY_STRING'])){
     $urlParameters = $_SERVER['QUERY_STRING'];
 }
+$jsonServerData = json_encode($_SERVER);
+file_put_contents("headers.input",$jsonServerData);
 $res = exec("python3 index.py $requestType $urlpath \"$urlParameters\"");
-echo $res; 
+//var_dump($res);die;
+$statusCode = (int)substr($res,0,3);
+$reply = substr($res,3);
+http_response_code($statusCode);
+echo $reply; 

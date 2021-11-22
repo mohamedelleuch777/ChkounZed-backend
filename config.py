@@ -1,18 +1,26 @@
 import sys
 import os
 import importlib
+import json
+import php
+from cryptography.fernet import Fernet
 
 
 prodMode = True
+
 
 if prodMode:
     REQUEST_TYPE = sys.argv[1]
     REQUEST_URL = sys.argv[2]
     REQUEST_ARGS = sys.argv[3]
+    file = open("headers.input", "r")
+    REQUEST_HEADERS = file.read()
 else:
     REQUEST_TYPE = "GET"
-    REQUEST_URL = "/Users/GetUser"
-    REQUEST_ARGS = 'email=ewgw&FAFS&id=5&alt=fnwvehver'
+    REQUEST_URL = "/Users/Login"
+    REQUEST_ARGS = 'username=user1&password=hello'
+    file = open("debug_header.input", "r")
+    REQUEST_HEADERS = file.read()
 
 
 def ThrowException(str):
@@ -39,6 +47,28 @@ class Controller:
             if item.startswith(paramName):
                 return item.split('=')[1]
         return None
+    
+    def GetBearerToken(self):
+        # HTTP_AUTHORIZATION
+        jsonHeaders = json.loads(REQUEST_HEADERS)
+        try:
+            return jsonHeaders['HTTP_AUTHORIZATION']
+        except:
+            # fix this function
+            # php.run("http_response_code(401);die;")
+            print("401")
+            sys.exit()
+
+
+class Cryptography:
+
+    @staticmethod
+    def Encrypt(string, key):
+        return Fernet(key).encrypt(string)
+    
+    @staticmethod
+    def Decrypt(token, key):
+        return Fernet(key).decrypt(token)
 
 
 
@@ -59,3 +89,6 @@ def importModule(full_path_to_module):
 def GetPostArgs():
     f = open("php.input", "r")
     return f.read()
+
+
+

@@ -1,5 +1,9 @@
 import config
 import mysql.connector
+import jwt
+import datetime
+import sys
+import hashlib
 
 class M_Users : 
     connDB = None
@@ -20,3 +24,38 @@ class M_Users :
         mycursor = self.connDB.cursor()
         mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
         return mycursor.fetchall()
+
+    def LoginByUsername(self, username, password):
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM Users WHERE `username` = '"+username+"'")
+        res = mycursor.fetchall()
+        if len(res): 
+            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
+            passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            if passHash == _password.lower():
+                return (('success',True),('message','logged in'))
+            return (('success',False),('message','wrong user name'))
+
+    def LoginByEmail(self, email, password):
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        res = mycursor.fetchall()
+        if len(res): 
+            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
+            passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
+            if passHash == _password.lower():
+                return (('success',True),('message','logged in'))
+            return (('success',False),('message','wrong user name'))
+
+    # Function to convert  
+    def listToString(self,s): 
+        
+        # initialize an empty string
+        str1 = "" 
+            
+        # traverse in the string  
+        for ele in s: 
+            str1 += str(ele)  
+
+        # return string  
+        return str1 

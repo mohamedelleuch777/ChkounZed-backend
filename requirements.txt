@@ -1,0 +1,3 @@
+importlib : pip3 install importlib
+jwt : pip3 install pyjwt
+cryptography : pip3 install cryptography
