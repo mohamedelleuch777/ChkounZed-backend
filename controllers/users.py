@@ -13,6 +13,7 @@ class Users( config.Controller ) :
         return config.REQUEST_ARGS
 
     def Login(self):
+        self.ForceMethod('GET')
         email = self.GetParam('email')
         username = self.GetParam('username')
         password = self.GetParam('password')

@@ -33,8 +33,23 @@ class M_Users :
             we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
             passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
             if passHash == _password.lower():
-                return (('success',True),('message','logged in'))
-            return (('success',False),('message','wrong user name'))
+                tok = self.GenerateUserToken()
+                return '''
+                {
+                    "success": true,
+                    "message": "Logged In",
+                    "token": "'''+ tok + '''"
+                }
+                '''
+            return '''
+            {
+                "success": false,
+                "message": "Not logged In"
+            }
+            '''
+            # if passHash == _password.lower():
+            #     return '{"success": true, "message": "logged in"}'
+            # return '{"success": false, "message": "wrong username/password"}'
 
     def LoginByEmail(self, email, password):
         mycursor = self.connDB.cursor()
@@ -44,8 +59,23 @@ class M_Users :
             we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
             passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
             if passHash == _password.lower():
-                return (('success',True),('message','logged in'))
-            return (('success',False),('message','wrong user name'))
+                tok = self.GenerateUserToken()
+                return '''
+                {
+                    "success": true,
+                    "message": "Logged In",
+                    "token": "'''+ tok + '''"
+                }
+                '''
+            return '''
+            {
+                "success": false,
+                "message": "Not logged In"
+            }
+            '''
+
+    def GenerateUserToken(self):
+        return "EFWfnew432GENf23FINEFI+FWNEISA"
 
     # Function to convert  
     def listToString(self,s): 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 import config
 
 
@@ -29,6 +30,8 @@ except Exception as e:
     config.Controller.InexistantRequest()
 
 result = methodToCall()
+
+result = json.dumps(result)
 
 print("200"+str(result))
 

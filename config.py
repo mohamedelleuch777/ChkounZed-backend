@@ -58,6 +58,11 @@ class Controller:
             # php.run("http_response_code(401);die;")
             print("401")
             sys.exit()
+    
+    def Convert2Json(self, tuple):
+        if len(tuple)==2:
+            if tuple[1] == "true" or tuple[1] == "false":
+                pass
 
 
 class Cryptography:
