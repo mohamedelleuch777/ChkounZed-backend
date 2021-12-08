@@ -69,6 +69,15 @@ class Controller:
             if tuple[1] == "true" or tuple[1] == "false":
                 pass
 
+    def GetPostArgs(self, argName=None):
+        f = open("php.input", "r")
+        obj = f.read()
+        postArgs = json.loads(obj)
+        if argName:
+            return postArgs[argName]
+        else:
+            return postArgs
+
 
 class Cryptography:
 
@@ -110,9 +119,6 @@ def importModule(full_path_to_module):
     return module_obj
 
 
-def GetPostArgs():
-    f = open("php.input", "r")
-    return f.read()
 
 
 
