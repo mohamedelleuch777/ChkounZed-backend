@@ -4,6 +4,7 @@ import importlib
 import json
 import php
 from cryptography.fernet import Fernet
+import base64
 
 
 prodMode = True
@@ -58,6 +59,10 @@ class Controller:
             # php.run("http_response_code(401);die;")
             print("401")
             sys.exit()
+
+    def DecodeToken(self, token, paramName):
+        data = Cryptography.Decrypt(token)
+        return data[paramName]
     
     def Convert2Json(self, tuple):
         if len(tuple)==2:
@@ -74,6 +79,20 @@ class Cryptography:
     @staticmethod
     def Decrypt(token, key):
         return Fernet(key).decrypt(token)
+
+    @staticmethod
+    def Encode64(message):
+        message_bytes = message.encode('ascii')
+        base64_bytes = base64.b64encode(message_bytes)
+        base64_message = base64_bytes.decode('ascii')
+        return base64_message
+    
+    @staticmethod
+    def Decode64(base64_message):
+        base64_bytes = base64_message.encode('ascii')
+        message_bytes = base64.b64decode(base64_bytes)
+        message = message_bytes.decode('ascii')
+        return message
 
 
 

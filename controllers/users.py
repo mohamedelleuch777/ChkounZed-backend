@@ -28,14 +28,9 @@ class Users( config.Controller ) :
         return self.cM_Users.ListAllUsers()
     
     def GetUser(self):
-        token = self.GetBearerToken()
         self.ForceMethod('GET')
-        email = self.GetParam('email')
-        username = self.GetParam('username')
-        if email!=None:
-            return self.cM_Users.GetUserByEmail(email)
-        else:
-            return self.cM_Users.GetUserByUsername(username)
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.GetUserData(bearerTok)
         
 
     def CreateUser(self):
