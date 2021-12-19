@@ -30,6 +30,8 @@ class Users( config.Controller ) :
         return self.cM_Users.GetUserData(bearerTok)
         
     def CreateUser(self):
+        # here
         self.ForceMethod('POST')
-        return self.GetPostArgs()
+        args = self.GetPostArgs()
+        return self.cM_Users.CreateUserCore(args)
         

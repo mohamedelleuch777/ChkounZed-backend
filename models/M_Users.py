@@ -27,6 +27,7 @@ class M_Users :
         return mycursor.fetchall()
 
     def GetUserData(self, bearerTok):
+        self.CheckTokenValidity(bearerTok)
         email = self.GetDataFromToken(bearerTok,'email')
         mycursor = self.connDB.cursor()
         mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
@@ -89,9 +90,34 @@ class M_Users :
                 "message": "Not logged In"
             }
 
+    def CreateUserCore(self, args):
+        mycursor = self.connDB.cursor()
+        lastIdBeforeInsert = mycursor.lastrowid
+        core = {}
+        try:
+            sql = (""  
+                "INSERT INTO `Users` (`id`, `username`, `email`, `firstname`, `lastname`, `birthday`, `creationDate`, `password`)"
+                "VALUES (NULL, '"+args['username']+"', '"+args['email']+"', '"+args['firstname']+"', '"+args['lastname']+"', '"+
+                args['birthday']+"', '"+args['creationDate']+"', '"+args['password']+"');"
+            "")
+            mycursor.execute(sql)
+            self.connDB.commit()
+            core = {
+                "success": lastIdBeforeInsert != mycursor.lastrowid,
+            }
+        except Exception as e:
+            pass
+            core = {
+                "success": lastIdBeforeInsert != mycursor.lastrowid,
+                "message": str(e)
+            }
+        parsedCore = json.dumps(core)
+        return parsedCore
+
     def GenerateUserToken(self, email):
         ts = int(time.time() * 1000)
-        ex = ts + 3600 * 24 * 365 # expire in one year
+        #ex = ts +  1000 * 3600 * 24 * 365 # expire in one year : time is in milliseconds
+        ex = ts + 1000 * 3600 * 24 * 7 # expire in one week : time is in milliseconds
         tsHash = hashlib.sha256(str(ex).encode('utf-8')).hexdigest()
         core = {
             "timestamp": ts,
@@ -101,11 +127,22 @@ class M_Users :
         }
         parsedCore = json.dumps(core)
         return config.Cryptography.Encode64(parsedCore)
-
+    
     def GetDataFromToken(self, token, key):
         decodedToken = config.Cryptography.Decode64(token.split(' ')[1])
         json_object = json.loads(decodedToken)
         return json_object[key]
+
+    def CheckTokenValidity(self, token):
+        expiration = self.GetDataFromToken(token,'expiration')
+        ts = int(time.time() * 1000)
+        if int(expiration) < int(ts):
+            error = {
+                "success": False,
+                "message": 'The auth token was expired!'
+            }
+            parsedError = json.dumps(error)
+            config.ThrowException('401'+parsedError)
 
     # Function to convert  
     def listToString(self,s): 
