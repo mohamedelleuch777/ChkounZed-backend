@@ -93,12 +93,14 @@ class M_Users :
     def CreateUserCore(self, args):
         mycursor = self.connDB.cursor()
         lastIdBeforeInsert = mycursor.lastrowid
+        passHash = hashlib.sha256(args['password'].encode('utf-8')).hexdigest()
+        passHash = passHash.upper()
         core = {}
         try:
             sql = (""  
-                "INSERT INTO `Users` (`id`, `username`, `email`, `firstname`, `lastname`, `birthday`, `creationDate`, `password`)"
+                "INSERT INTO `Users` (`id`, `username`, `email`, `firstname`, `lastname`, `birthday`, `creationDate`, `password`, `phone`, `status`)"
                 "VALUES (NULL, '"+args['username']+"', '"+args['email']+"', '"+args['firstname']+"', '"+args['lastname']+"', '"+
-                args['birthday']+"', '"+args['creationDate']+"', '"+args['password']+"');"
+                args['birthday']+"', '"+args['creationDate']+"', '"+passHash+"', '"+args['phone']+"', '0');"
             "")
             mycursor.execute(sql)
             self.connDB.commit()
