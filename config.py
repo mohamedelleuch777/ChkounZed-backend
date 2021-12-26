@@ -40,7 +40,7 @@ class Controller:
     
     @staticmethod
     def InexistantRequest():
-        ThrowException('This method does not exist')
+        ThrowException('404This method does not exist')
 
     def GetParam(self, paramName):
         params = REQUEST_ARGS.split('&')

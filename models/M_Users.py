@@ -33,7 +33,7 @@ class M_Users :
         mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
         res = mycursor.fetchall()
         if len(res): 
-            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
+            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password, _phone, _status = res[0]
             return {
                     "success": True,
                     "id": we,
@@ -42,7 +42,9 @@ class M_Users :
                     "firstname": _fstname,
                     "lastname": _lstname,
                     "birthday": _birthday,
-                    "creation_date": _creationDate
+                    "creation_date": _creationDate,
+                    "phone": _phone,
+                    "status": _status
                 }
         return {
             "success": False,
@@ -54,7 +56,8 @@ class M_Users :
         mycursor.execute("SELECT * FROM Users WHERE `username` = '"+username+"'")
         res = mycursor.fetchall()
         if len(res): 
-            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
+            _email = res[0][2]
+            _password = res[0][7]
             passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
             if passHash == _password.lower():
                 tok = self.GenerateUserToken(_email)
@@ -95,20 +98,32 @@ class M_Users :
         lastIdBeforeInsert = mycursor.lastrowid
         passHash = hashlib.sha256(args['password'].encode('utf-8')).hexdigest()
         passHash = passHash.upper()
+        # ts stores the time in milliseconds
+        ts = int(time.time() * 1000)
         core = {}
         try:
             sql = (""  
                 "INSERT INTO `Users` (`id`, `username`, `email`, `firstname`, `lastname`, `birthday`, `creationDate`, `password`, `phone`, `status`)"
                 "VALUES (NULL, '"+args['username']+"', '"+args['email']+"', '"+args['firstname']+"', '"+args['lastname']+"', '"+
-                args['birthday']+"', '"+args['creationDate']+"', '"+passHash+"', '"+args['phone']+"', '0');"
+                args['birthday']+"', '"+str(ts)+"', '"+passHash+"', '"+args['phone']+"', '0');"
             "")
             mycursor.execute(sql)
             self.connDB.commit()
             core = {
                 "success": lastIdBeforeInsert != mycursor.lastrowid,
             }
+            # if came here that means the record has been created then, we can get the new user id to create its wallet
+            mycursor = self.connDB.cursor()
+            mycursor.execute("SELECT * FROM Users WHERE `email` = '"+args['email']+"'")
+            res = mycursor.fetchall()
+            userId = res[0][0]
+            sql = (""
+                "INSERT INTO `Wallet` (`id`, `user_id`, `currency_name`, `currency_symbol`, `payment_processor_1_id`, `payment_processor_1_balance`)"
+                "VALUES (NULL, '"+str(userId)+"', 'TRY', '₺', '', '0' );"
+            "")
+            mycursor.execute(sql)
+            self.connDB.commit()
         except Exception as e:
-            pass
             core = {
                 "success": lastIdBeforeInsert != mycursor.lastrowid,
                 "message": str(e)
