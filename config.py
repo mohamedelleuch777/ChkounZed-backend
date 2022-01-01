@@ -5,6 +5,7 @@ import json
 import php
 from cryptography.fernet import Fernet
 import base64
+import random
 
 
 prodMode = True
@@ -27,6 +28,15 @@ else:
 def ThrowException(str):
     print(str)
     sys.exit()
+
+def set_bit(val, index, x):
+  # """Set the index:th bit of v to 1 if x is truthy, else to 0, and return the new value."""
+  mask = 1 << index   # Compute mask, an integer with just bit 'index' set.
+  val &= ~mask          # Clear the bit indicated by the mask (if x is False)
+  if x:
+    val |= mask         # If x was True, set the bit indicated by the mask.
+  return val            # Return the result, we're done.
+
 
 
 class Controller:
@@ -77,6 +87,7 @@ class Controller:
             return postArgs[argName]
         else:
             return postArgs
+
 
 
 class Cryptography:

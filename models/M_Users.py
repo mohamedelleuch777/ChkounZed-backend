@@ -161,6 +161,108 @@ class M_Users :
             parsedError = json.dumps(error)
             config.ThrowException('401'+parsedError)
 
+    def SetUserEmailStatus(self, bearerTok, state): # index 0
+        self.CheckTokenValidity(bearerTok)
+        email = self.GetDataFromToken(bearerTok,'email')
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        res = mycursor.fetchall()
+        if len(res): 
+            userId = res[0][0]
+            _status = res[0][9]
+            if state:
+                _status = _status | 0b00000001
+            else:
+                _status = _status & 0b11111110
+            sql = (""  
+                "UPDATE `Users` SET `status` = '"+str(_status)+"' WHERE `Users`.`id` = "+str(userId)+";"
+            "")
+            mycursor.execute(sql)
+            self.connDB.commit()
+            return {
+                    "success": True
+                }
+        return {
+            "success": False,
+            "message": "Error while setting user status"
+        }
+    
+    def SetUserPhoneStatus(self, bearerTok, state): # index 1
+        self.CheckTokenValidity(bearerTok)
+        email = self.GetDataFromToken(bearerTok,'email')
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        res = mycursor.fetchall()
+        if len(res): 
+            userId = res[0][0]
+            _status = res[0][9]
+            if state:
+                _status = _status | 0b00000010
+            else:
+                _status = _status & 0b11111101
+            sql = (""  
+                "UPDATE `Users` SET `status` = '"+str(_status)+"' WHERE `Users`.`id` = "+str(userId)+";"
+            "")
+            mycursor.execute(sql)
+            self.connDB.commit()
+            return {
+                    "success": True
+                }
+        return {
+            "success": False,
+            "message": "Error while setting user status"
+        }
+
+    def SetUserBannedStatus(self, bearerTok, state): # index 2
+        self.CheckTokenValidity(bearerTok)
+        email = self.GetDataFromToken(bearerTok,'email')
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        res = mycursor.fetchall()
+        if len(res): 
+            userId = res[0][0]
+            _status = res[0][9]
+            if state:
+                _status = _status | 0b00000100
+            else:
+                _status = _status & 0b11111011
+            sql = (""  
+                "UPDATE `Users` SET `status` = '"+str(_status)+"' WHERE `Users`.`id` = "+str(userId)+";"
+            "")
+            mycursor.execute(sql)
+            self.connDB.commit()
+            return {
+                    "success": True
+                }
+        return {
+            "success": False,
+            "message": "Error while setting user status"
+        }
+
+    def SendConfirmationCode(self, bearerTok, mode): # mode 1: email; mode 2: phone
+        self.CheckTokenValidity(bearerTok)
+        mycursor = self.connDB.cursor()
+        ts = int(time.time() * 1000)
+        code = config.random.randint(100000, 999999)
+        email = self.GetDataFromToken(bearerTok,'email')
+        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        res = mycursor.fetchall()
+        if len(res): 
+            userId = res[0][0]
+            _phone = res[0][8]
+        sql = (""  
+                "INSERT INTO `Confirmation` (`id`, `user_id`, `confirmation_code`, `timestamp`) "
+                "VALUES (NULL, '"+str(userId)+"', '"+str(code)+"', '"+str(ts)+"');"
+            "")
+        mycursor.execute(sql)
+        self.connDB.commit()
+        if mode==1:
+            pass # send code by email
+        elif mode==2:
+            pass # send code by phone
+        return {
+                "success": True
+            }
     # Function to convert  
     def listToString(self,s): 
         

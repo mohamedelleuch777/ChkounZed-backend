@@ -35,3 +35,43 @@ class Users( config.Controller ) :
         args = self.GetPostArgs()
         return self.cM_Users.CreateUserCore(args)
         
+    def ActivateEmail(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SetUserEmailStatus(bearerTok, True)
+        
+    def InactivateEmail(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SetUserEmailStatus(bearerTok, False)
+        
+    def ActivatePhone(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SetUserPhoneStatus(bearerTok, True)
+        
+    def InactivatePhone(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SetUserPhoneStatus(bearerTok, False)
+        
+    def Ban(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SetUserBannedStatus(bearerTok, True)
+        
+    def Unban(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SetUserBannedStatus(bearerTok, False)
+        
+    def SendConfirmationCodeEmail(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SendConfirmationCode(bearerTok, 1)
+        
+    def SendConfirmationCodePhone(self):
+        self.ForceMethod('GET')
+        bearerTok = self.GetBearerToken()
+        return self.cM_Users.SendConfirmationCode(bearerTok, 2)
+        
