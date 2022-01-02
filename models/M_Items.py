@@ -47,3 +47,17 @@ class M_Items :
             }
         parsedCore = json.dumps(core)
         return parsedCore
+
+    def ListFutureItemsCore(self, timestamp, count=10):
+        # https://images.samsung.com/is/image/samsung/tr-fhd-t5300-ue40t5300auxtk-frontblack-237104952
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM `Items` WHERE `bid_starting_date` > "+str(timestamp)+" LIMIT " + str(count))
+        return mycursor.fetchall()
+
+    def ListPastItemsCore(self, timestamp, count=10):
+        # https://images.samsung.com/is/image/samsung/tr-fhd-t5300-ue40t5300auxtk-frontblack-237104952
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM `Items` WHERE `bid_starting_date` < "+str(timestamp)+" LIMIT " + str(count))
+        return mycursor.fetchall()
+
+

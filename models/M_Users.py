@@ -143,23 +143,7 @@ class M_Users :
             "hash": tsHash
         }
         parsedCore = json.dumps(core)
-        return config.Cryptography.Encode64(parsedCore)
-    
-    def GetDataFromToken(self, token, key):
-        decodedToken = config.Cryptography.Decode64(token.split(' ')[1])
-        json_object = json.loads(decodedToken)
-        return json_object[key]
-
-    def CheckTokenValidity(self, token):
-        expiration = self.GetDataFromToken(token,'expiration')
-        ts = int(time.time() * 1000)
-        if int(expiration) < int(ts):
-            error = {
-                "success": False,
-                "message": 'The auth token was expired!'
-            }
-            parsedError = json.dumps(error)
-            config.ThrowException('401'+parsedError)
+        return config.Cryptography.Encode64(parsedCore)    
 
     def SetUserEmailStatus(self, bearerTok, state): # index 0
         self.CheckTokenValidity(bearerTok)
@@ -259,7 +243,7 @@ class M_Users :
         if mode==1:
             pass # send code by email
         elif mode==2:
-            pass # send code by phone
+            pass # send code by phone sms
         return {
                 "success": True
             }

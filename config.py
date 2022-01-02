@@ -1,11 +1,13 @@
 import sys
 import os
 import importlib
+import time
 import json
 import php
 from cryptography.fernet import Fernet
 import base64
 import random
+import os
 
 
 prodMode = True
@@ -27,7 +29,8 @@ else:
 
 def ThrowException(str):
     print(str)
-    sys.exit()
+    sys.exit() # quit  with raising an exception
+    #os._exit(0) # quit immediately without raising an exception
 
 def set_bit(val, index, x):
   # """Set the index:th bit of v to 1 if x is truthy, else to 0, and return the new value."""
@@ -62,13 +65,35 @@ class Controller:
     def GetBearerToken(self):
         # HTTP_AUTHORIZATION
         jsonHeaders = json.loads(REQUEST_HEADERS)
+        error = {
+                    "success": False,
+                    "message": 'The auth token was expired!'
+                }
+        parsedError = json.dumps(error)
         try:
-            return jsonHeaders['HTTP_AUTHORIZATION']
+            bearerToken = jsonHeaders['HTTP_AUTHORIZATION']
+            #ThrowException("401"+bearerToken)
+            if self.CheckTokenValidity(bearerToken):
+                return bearerToken.split(' ')[1]
+            else:
+                
+                ThrowException('401'+parsedError)
         except:
             # fix this function
             # php.run("http_response_code(401);die;")
-            print("401")
-            sys.exit()
+            ThrowException('401'+parsedError)
+
+    def CheckTokenValidity(self, token):
+        expiration = self.GetDataFromToken(token,'expiration')
+        ts = int(time.time() * 1000)
+        if int(expiration) < int(ts):
+            return False # not valid token or expired
+        return True # valid token and not expired
+
+    def GetDataFromToken(self, token, key):
+        decodedToken = Cryptography.Decode64(token.split(' ')[1])
+        json_object = json.loads(decodedToken)
+        return json_object[key]
 
     def DecodeToken(self, token, paramName):
         data = Cryptography.Decrypt(token)
