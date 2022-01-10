@@ -27,7 +27,26 @@ class Users( config.Controller ) :
     def GetUser(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.GetUserData(bearerTok)
+        id = self.GetDataFromToken(bearerTok,'id')
+        res = self.cM_Users.GetUserData(id)
+        if len(res): 
+            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password, _phone, _status = res[0]
+            return {
+                    "success": True,
+                    "id": we,
+                    "username": _username,
+                    "email": _email,
+                    "firstname": _fstname,
+                    "lastname": _lstname,
+                    "birthday": _birthday,
+                    "creation_date": _creationDate,
+                    "phone": _phone,
+                    "status": _status
+                }
+        return {
+            "success": False,
+            "message": "Error while reading user data"
+        }
         
     def CreateUser(self):
         # here
@@ -38,40 +57,48 @@ class Users( config.Controller ) :
     def ActivateEmail(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SetUserEmailStatus(bearerTok, True)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SetUserEmailStatus(id, True)
         
     def InactivateEmail(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SetUserEmailStatus(bearerTok, False)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SetUserEmailStatus(id, False)
         
     def ActivatePhone(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SetUserPhoneStatus(bearerTok, True)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SetUserPhoneStatus(id, True)
         
     def InactivatePhone(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SetUserPhoneStatus(bearerTok, False)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SetUserPhoneStatus(id, False)
         
     def Ban(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SetUserBannedStatus(bearerTok, True)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SetUserBannedStatus(id, True)
         
     def Unban(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SetUserBannedStatus(bearerTok, False)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SetUserBannedStatus(id, False)
         
     def SendConfirmationCodeEmail(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SendConfirmationCode(bearerTok, 1)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SendConfirmationCode(id, 1)
         
     def SendConfirmationCodePhone(self):
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
-        return self.cM_Users.SendConfirmationCode(bearerTok, 2)
+        id = self.GetDataFromToken(bearerTok,'id')
+        return self.cM_Users.SendConfirmationCode(id, 2)
         

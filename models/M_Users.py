@@ -26,41 +26,22 @@ class M_Users :
         mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
         return mycursor.fetchall()
 
-    def GetUserData(self, bearerTok):
-        self.CheckTokenValidity(bearerTok)
-        email = self.GetDataFromToken(bearerTok,'email')
+    def GetUserData(self, id):
         mycursor = self.connDB.cursor()
-        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
-        res = mycursor.fetchall()
-        if len(res): 
-            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password, _phone, _status = res[0]
-            return {
-                    "success": True,
-                    "id": we,
-                    "username": _username,
-                    "email": _email,
-                    "firstname": _fstname,
-                    "lastname": _lstname,
-                    "birthday": _birthday,
-                    "creation_date": _creationDate,
-                    "phone": _phone,
-                    "status": _status
-                }
-        return {
-            "success": False,
-            "message": "Error while reading user data"
-        }
+        mycursor.execute("SELECT * FROM Users WHERE `id` = '"+str(id)+"'")
+        return mycursor.fetchall()
+        
 
     def LoginByUsername(self, username, password):
         mycursor = self.connDB.cursor()
         mycursor.execute("SELECT * FROM Users WHERE `username` = '"+username+"'")
         res = mycursor.fetchall()
         if len(res): 
-            _email = res[0][2]
+            _id = res[0][0]
             _password = res[0][7]
             passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
             if passHash == _password.lower():
-                tok = self.GenerateUserToken(_email)
+                tok = self.GenerateUserToken(_id)
                 return {
                     "success": True,
                     "message": "Logged In",
@@ -79,10 +60,10 @@ class M_Users :
         mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
         res = mycursor.fetchall()
         if len(res): 
-            we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
+            _id, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password = res[0]
             passHash = hashlib.sha256(password.encode('utf-8')).hexdigest()
             if passHash == _password.lower():
-                tok = self.GenerateUserToken(_email)
+                tok = self.GenerateUserToken(_id)
                 return {
                     "success": True,
                     "message": "Logged In",
@@ -131,7 +112,7 @@ class M_Users :
         parsedCore = json.dumps(core)
         return parsedCore
 
-    def GenerateUserToken(self, email):
+    def GenerateUserToken(self, id):
         ts = int(time.time() * 1000)
         #ex = ts +  1000 * 3600 * 24 * 365 # expire in one year : time is in milliseconds
         ex = ts + 1000 * 3600 * 24 * 7 # expire in one week : time is in milliseconds
@@ -139,20 +120,18 @@ class M_Users :
         core = {
             "timestamp": ts,
             "expiration": ex,
-            "email": email,
+            "id": id,
             "hash": tsHash
         }
         parsedCore = json.dumps(core)
         return config.Cryptography.Encode64(parsedCore)    
 
-    def SetUserEmailStatus(self, bearerTok, state): # index 0
-        self.CheckTokenValidity(bearerTok)
-        email = self.GetDataFromToken(bearerTok,'email')
+    def SetUserEmailStatus(self, id, state): # index 0
         mycursor = self.connDB.cursor()
-        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        mycursor.execute("SELECT * FROM Users WHERE `id` = '"+str(id)+"'")
         res = mycursor.fetchall()
         if len(res): 
-            userId = res[0][0]
+            userId = id
             _status = res[0][9]
             if state:
                 _status = _status | 0b00000001
@@ -171,14 +150,12 @@ class M_Users :
             "message": "Error while setting user status"
         }
     
-    def SetUserPhoneStatus(self, bearerTok, state): # index 1
-        self.CheckTokenValidity(bearerTok)
-        email = self.GetDataFromToken(bearerTok,'email')
+    def SetUserPhoneStatus(self, id, state): # index 1
         mycursor = self.connDB.cursor()
-        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        mycursor.execute("SELECT * FROM Users WHERE `id` = '"+str(id)+"'")
         res = mycursor.fetchall()
         if len(res): 
-            userId = res[0][0]
+            userId = id
             _status = res[0][9]
             if state:
                 _status = _status | 0b00000010
@@ -197,14 +174,12 @@ class M_Users :
             "message": "Error while setting user status"
         }
 
-    def SetUserBannedStatus(self, bearerTok, state): # index 2
-        self.CheckTokenValidity(bearerTok)
-        email = self.GetDataFromToken(bearerTok,'email')
+    def SetUserBannedStatus(self, id, state): # index 2
         mycursor = self.connDB.cursor()
-        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        mycursor.execute("SELECT * FROM Users WHERE `id` = '"+str(id)+"'")
         res = mycursor.fetchall()
         if len(res): 
-            userId = res[0][0]
+            userId = id
             _status = res[0][9]
             if state:
                 _status = _status | 0b00000100
@@ -223,17 +198,16 @@ class M_Users :
             "message": "Error while setting user status"
         }
 
-    def SendConfirmationCode(self, bearerTok, mode): # mode 1: email; mode 2: phone
-        self.CheckTokenValidity(bearerTok)
+    def SendConfirmationCode(self, id, mode): # mode 1: email; mode 2: phone
         mycursor = self.connDB.cursor()
         ts = int(time.time() * 1000)
         code = config.random.randint(100000, 999999)
-        email = self.GetDataFromToken(bearerTok,'email')
-        mycursor.execute("SELECT * FROM Users WHERE `email` = '"+email+"'")
+        mycursor.execute("SELECT * FROM Users WHERE `id` = '"+str(id)+"'")
         res = mycursor.fetchall()
         if len(res): 
-            userId = res[0][0]
+            userId = id
             _phone = res[0][8]
+            _email = res[0][2]
         sql = (""  
                 "INSERT INTO `Confirmation` (`id`, `user_id`, `confirmation_code`, `timestamp`) "
                 "VALUES (NULL, '"+str(userId)+"', '"+str(code)+"', '"+str(ts)+"');"
@@ -247,15 +221,5 @@ class M_Users :
         return {
                 "success": True
             }
-    # Function to convert  
-    def listToString(self,s): 
-        
-        # initialize an empty string
-        str1 = "" 
-            
-        # traverse in the string  
-        for ele in s: 
-            str1 += str(ele)  
 
-        # return string  
-        return str1 
+

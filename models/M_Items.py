@@ -17,7 +17,6 @@ class M_Items :
         )
 
     def ListAllItems(self):
-        # https://images.samsung.com/is/image/samsung/tr-fhd-t5300-ue40t5300auxtk-frontblack-237104952
         mycursor = self.connDB.cursor()
         mycursor.execute("SELECT * FROM Items")
         return mycursor.fetchall()
@@ -40,7 +39,6 @@ class M_Items :
                 "success": lastIdBeforeInsert != mycursor.lastrowid,
             }
         except Exception as e:
-            pass
             core = {
                 "success": lastIdBeforeInsert != mycursor.lastrowid,
                 "message": str(e)
@@ -49,15 +47,28 @@ class M_Items :
         return parsedCore
 
     def ListFutureItemsCore(self, timestamp, count=10):
-        # https://images.samsung.com/is/image/samsung/tr-fhd-t5300-ue40t5300auxtk-frontblack-237104952
         mycursor = self.connDB.cursor()
         mycursor.execute("SELECT * FROM `Items` WHERE `bid_starting_date` > "+str(timestamp)+" LIMIT " + str(count))
         return mycursor.fetchall()
 
     def ListPastItemsCore(self, timestamp, count=10):
-        # https://images.samsung.com/is/image/samsung/tr-fhd-t5300-ue40t5300auxtk-frontblack-237104952
         mycursor = self.connDB.cursor()
         mycursor.execute("SELECT * FROM `Items` WHERE `bid_starting_date` < "+str(timestamp)+" LIMIT " + str(count))
         return mycursor.fetchall()
+
+    def GetItemData(self, id):
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM `Items` WHERE `id` = "+str(id))
+        return mycursor.fetchall()
+
+    def DoesItemAcceptBid(self, id):
+        mycursor = self.connDB.cursor()
+        mycursor.execute("SELECT * FROM `Items` WHERE `id` = "+str(id))
+        item = mycursor.fetchall()
+        if(len(item)==0):
+            config.ReturnJsonError("Item does not exist")
+        item = item[0]
+        item_status = item[11]
+        return config.isFlagActive(item_status, config.constants.ITEM_ACCEPT_BIDS)
 
 

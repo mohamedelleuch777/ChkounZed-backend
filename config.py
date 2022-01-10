@@ -8,6 +8,7 @@ from cryptography.fernet import Fernet
 import base64
 import random
 import os
+import constants
 
 
 prodMode = True
@@ -39,6 +40,21 @@ def set_bit(val, index, x):
   if x:
     val |= mask         # If x was True, set the bit indicated by the mask.
   return val            # Return the result, we're done.
+
+def ReturnJsonError(message):
+    core = {
+                "success": False,
+                "message": str(message)
+            }
+    parsedCore = json.dumps(core)
+    print("200"+parsedCore)
+    sys.exit() # quit  with raising an exception
+
+def GetFlagValue(user_status, flag):
+        return user_status & flag
+
+def isFlagActive(user_status, flag):
+    return user_status & flag == flag
 
 
 
@@ -84,16 +100,22 @@ class Controller:
             ThrowException('401'+parsedError)
 
     def CheckTokenValidity(self, token):
-        expiration = self.GetDataFromToken(token,'expiration')
-        ts = int(time.time() * 1000)
-        if int(expiration) < int(ts):
-            return False # not valid token or expired
-        return True # valid token and not expired
+        try:
+            expiration = self.GetDataFromToken(token.split(' ')[1],'expiration')
+            ts = int(time.time() * 1000)
+            if( int(expiration) < int(ts) )or( expiration == None ):
+                return False # not valid token or expired
+            return True # valid token and not expired
+        except:
+            return False
 
     def GetDataFromToken(self, token, key):
-        decodedToken = Cryptography.Decode64(token.split(' ')[1])
-        json_object = json.loads(decodedToken)
-        return json_object[key]
+        try:
+            decodedToken = Cryptography.Decode64(token)
+            json_object = json.loads(decodedToken)
+            return json_object[key]
+        except:
+            return None
 
     def DecodeToken(self, token, paramName):
         data = Cryptography.Decrypt(token)
@@ -112,6 +134,20 @@ class Controller:
             return postArgs[argName]
         else:
             return postArgs
+
+    def GetGetArgs(self, argName=None):
+        arrArgs = REQUEST_ARGS.split('&')
+        if argName:
+            for i in range(0,len(arrArgs)):
+                arg = arrArgs[i]
+                if arg.split('=')[0] == argName:
+                    return arg.split('=')[1]
+            return None
+        else:
+            return arrArgs
+
+    
+
 
 
 
