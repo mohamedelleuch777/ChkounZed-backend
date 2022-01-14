@@ -105,11 +105,11 @@ class Controller:
                 return bearerToken.split(' ')[1]
             else:
                 
-                ReturnJsonError('401'+parsedError)
+                ReturnJsonError(parsedError,401)
         except:
             # fix this function
             # php.run("http_response_code(401);die;")
-            ReturnJsonError('401'+parsedError)
+            ReturnJsonError(parsedError,401)
 
     def CheckTokenValidity(self, token):
         try:
