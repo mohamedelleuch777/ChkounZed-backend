@@ -14,7 +14,12 @@ if(isset($_SERVER['QUERY_STRING'])){
 }
 $jsonServerData = json_encode($_SERVER);
 file_put_contents("headers.input",$jsonServerData);
+
 $res = exec("python3 index.py $requestType $urlpath \"$urlParameters\"");
+
+// echo 'after meth<br>';
+// var_dump($res);
+// die;
 //var_dump($res);die;
 $statusCode = (int)substr($res,0,3);
 $reply = substr($res,3);

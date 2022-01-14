@@ -26,7 +26,6 @@ key="$1"
 
 # Example command:
 # ./deploy.sh -s php
-# ./deploy.sh -s all -b
 
 case $key in
     -s|--sources)

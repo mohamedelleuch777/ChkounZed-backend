@@ -5,7 +5,7 @@ import importlib
 import time
 import json
 import php
-from cryptography.fernet import Fernet
+#from cryptography.fernet import Fernet
 import base64
 import random
 import os
@@ -75,7 +75,7 @@ class Controller:
     
     @staticmethod
     def BlockRequests():
-        ReturnJsonError('This method is not callable')
+        ReturnJsonError('This method is not callable',500)
     
     @staticmethod
     def InexistantRequest():
@@ -163,13 +163,13 @@ class Controller:
 
 class Cryptography:
 
-    @staticmethod
-    def Encrypt(string, key):
-        return Fernet(key).encrypt(string)
+    # @staticmethod
+    # def Encrypt(string, key):
+    #     return Fernet(key).encrypt(string)
     
-    @staticmethod
-    def Decrypt(token, key):
-        return Fernet(key).decrypt(token)
+    # @staticmethod
+    # def Decrypt(token, key):
+    #     return Fernet(key).decrypt(token)
 
     @staticmethod
     def Encode64(message):
@@ -188,6 +188,16 @@ class Cryptography:
 
 
 def importModule(full_path_to_module):
+    # module_dir, module_file = os.path.split(full_path_to_module)
+    # module_name, module_ext = os.path.splitext(module_file)
+    # sys.path.insert(0, module_dir)
+    # module_obj = importlib.import_module(module_name)
+    # module_obj.__file__ = full_path_to_module
+    # globals()[module_name] = module_obj
+    # return module_obj
+
+
+    #ReturnJsonError(str(module_obj)+"___"+str(module_obj.__file__ ))
     try:
         module_dir, module_file = os.path.split(full_path_to_module)
         module_name, module_ext = os.path.splitext(module_file)

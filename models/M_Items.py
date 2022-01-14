@@ -1,6 +1,5 @@
 import config
 import mysql.connector
-import jwt
 import time
 import sys
 import hashlib
