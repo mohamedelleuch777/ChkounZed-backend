@@ -43,12 +43,12 @@ class M_Transactions :
         if ( bid_amount <= 0 or bid_amount>user_total_balance):
             config.ReturnJsonError("bid amount should be geater than 0 and should not exceed the balance")
         # passed all tests successfully
-        # continue here
-        # save tx to db
         ts = int(time.time() * 1000)
         cols = ["id"    ,"tx_type"  ,"amount"   ,"status","timestamp","maker_user_id","taker_user_id","item_id"]
         vals = ["NULL"  ,"bid"      , str(bid_amount),"4"     , str(ts)        , str(user_id)       , str(0)             ,str(item_id)]
         self.db.Insert("Transactions",cols,vals)
+        # continue here
+        # deduct bid from balance
         return {
             "success": True,
             "message": "bid placed for that item"
