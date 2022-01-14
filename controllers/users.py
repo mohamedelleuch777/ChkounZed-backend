@@ -15,10 +15,12 @@ class Users( config.Controller ) :
         email = self.GetParam('email')
         username = self.GetParam('username')
         password = self.GetParam('password')
-        if email!=None:
+        if email!=None and  password!=None:
             return self.cM_Users.LoginByEmail(email,password)
-        else:
+        elif username!=None and  password!=None:
             return self.cM_Users.LoginByUsername(username,password)
+        else:
+            config.ReturnJsonError("Missing parameter for the GET request")
     
     def GetAllUsers(self):
         self.ForceMethod('GET')

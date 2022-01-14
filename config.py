@@ -88,7 +88,7 @@ class Controller:
         for item in params:
             if item.startswith(paramName):
                 return item.split('=')[1]
-        ReturnJsonError(paramName+" where expected as a parameter for the GET request")
+        return None
     
     def GetBearerToken(self):
         # HTTP_AUTHORIZATION

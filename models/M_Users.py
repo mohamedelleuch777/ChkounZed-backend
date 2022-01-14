@@ -49,6 +49,11 @@ class M_Users :
                 "success": False,
                 "message": "Not logged In"
             }
+        else:
+            return {
+                "success": False,
+                "message": "Not logged In"
+            }
             # if passHash == _password.lower():
             #     return '{"success": true, "message": "logged in"}'
             # return '{"success": false, "message": "wrong username/password"}'
