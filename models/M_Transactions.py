@@ -34,9 +34,7 @@ class M_Transactions :
         if banned:
             config.ReturnJsonError("Banned user cannot bid")
         # getting user wallet:
-        mycursor = self.connDB.cursor()
-        mycursor.execute("SELECT * FROM `Wallet` WHERE `user_id` = "+str(user_id))
-        res = mycursor.fetchall()
+        res = self.db.Select('Wallet',"`user_id` = "+str(user_id))
         user_wallet = res[0]
         user_total_balance = user_wallet[4]
         # check user balance and user requested bid:
@@ -49,6 +47,8 @@ class M_Transactions :
         self.db.Insert("Transactions",cols,vals)
         # continue here
         # deduct bid from balance
+        new_balance = user_total_balance - bid_amount
+        self.db.Update('Wallet','total_balance',new_balance,"`user_id` = "+str(user_id))
         return {
             "success": True,
             "message": "bid placed for that item"

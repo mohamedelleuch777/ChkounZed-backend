@@ -17,7 +17,7 @@ class Sql():
         strVal = "'" + "','".join(values) + "'"
         strVal = strVal.replace("'NULL'","NULL")
         sql_ = (""  
-            "INSERT INTO `"+table+"` ("+strCol+")"
+            "INSERT INTO `"+str(table)+"` ("+strCol+")"
             "VALUES ("+strVal+");"
         "")
         
@@ -27,14 +27,14 @@ class Sql():
     
     def Select(self, table, cond):
         mycursor = self.connDB.cursor()
-        sql_ = "SELECT * FROM `"+table+"` WHERE " + cond
+        sql_ = "SELECT * FROM `"+str(table)+"` WHERE " + str(cond)
         mycursor.execute(sql_)
-        return self.connDB.fetchall()
+        return mycursor.fetchall()
 
     def Update(self, table, col, val, cond):
         mycursor = self.connDB.cursor()
         # UPDATE `Items` SET `min_required_users` = '99' WHERE `Items`.`id` = 3;
-        sql_ = "UPDATE `"+table+"` SET `"+col+"` = '"+val+"' WHERE "+cond
+        sql_ = "UPDATE `"+str(table)+"` SET `"+str(col)+"` = '"+str(val)+"' WHERE "+str(cond)
         mycursor.execute(sql_)
         self.connDB.commit()
 
