@@ -109,7 +109,7 @@ class Controller:
         except:
             # fix this function
             # php.run("http_response_code(401);die;")
-            ReturnJsonError(parsedError,401)
+            ReturnJsonError("fucked",401)
 
     def CheckTokenValidity(self, token):
         try:
