@@ -47,6 +47,7 @@ class Transactions( config.Controller ) :
         banned = config.isFlagActive(user_status, config.constants.FLAG_BANNED)
         if banned:
             config.ReturnJsonError("Banned user cannot bid")
+        # is item accepting bids
         if not item_accept_bids:
             config.ReturnJsonError("This item does not accept bids at the moment")
         if len(user)==0: 

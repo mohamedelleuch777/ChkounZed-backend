@@ -1,3 +1,4 @@
+from logging import error
 import sys
 import os
 import importlib
@@ -41,13 +42,22 @@ def set_bit(val, index, x):
     val |= mask         # If x was True, set the bit indicated by the mask.
   return val            # Return the result, we're done.
 
-def ReturnJsonError(message):
-    core = {
-                "success": False,
-                "message": str(message)
-            }
+def ReturnJsonError(message, error_code = None):
+    err_code = "200"
+    if error_code:
+        core = {
+                    "success": False,
+                    "message": str(message),
+                    "code": error_code
+                }
+        err_code = error_code
+    else:
+        core = {
+                    "success": False,
+                    "message": str(message)
+                }
     parsedCore = json.dumps(core)
-    print("200"+parsedCore)
+    print(str(err_code)+parsedCore)
     sys.exit() # quit  with raising an exception
 
 def GetFlagValue(user_status, flag):
@@ -61,15 +71,15 @@ def isFlagActive(user_status, flag):
 class Controller:
     def ForceMethod(self, methodType):
         if REQUEST_TYPE != methodType:
-            ThrowException('This method only accept '+methodType+' requests')
+            ReturnJsonError('This method only accept '+methodType+' requests')
     
     @staticmethod
     def BlockRequests():
-        ThrowException('This method is not callable')
+        ReturnJsonError('This method is not callable')
     
     @staticmethod
     def InexistantRequest():
-        ThrowException('404This method does not exist')
+        ReturnJsonError('This method does not exist',404)
 
     def GetParam(self, paramName):
         params = REQUEST_ARGS.split('&')
@@ -93,11 +103,11 @@ class Controller:
                 return bearerToken.split(' ')[1]
             else:
                 
-                ThrowException('401'+parsedError)
+                ReturnJsonError('401'+parsedError)
         except:
             # fix this function
             # php.run("http_response_code(401);die;")
-            ThrowException('401'+parsedError)
+            ReturnJsonError('401'+parsedError)
 
     def CheckTokenValidity(self, token):
         try:
