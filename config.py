@@ -82,8 +82,6 @@ class Controller:
         ReturnJsonError('This method does not exist',404)
 
     def GetParam(self, paramName):
-        if REQUEST_ARGS=="":
-            ReturnJsonError("A parameter expected for the GET request")
         params = REQUEST_ARGS.split('&')
         for item in params:
             if item.startswith(paramName):

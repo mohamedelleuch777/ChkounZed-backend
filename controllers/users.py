@@ -30,6 +30,9 @@ class Users( config.Controller ) :
         self.ForceMethod('GET')
         bearerTok = self.GetBearerToken()
         id = self.GetDataFromToken(bearerTok,'id')
+        user_id = self.GetParam('userId')
+        if user_id:
+            id = user_id
         res = self.cM_Users.GetUserData(id)
         if len(res): 
             we, _username, _email, _fstname, _lstname, _birthday, _creationDate, _password, _phone, _status = res[0]
