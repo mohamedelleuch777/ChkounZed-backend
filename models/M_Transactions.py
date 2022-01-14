@@ -25,33 +25,11 @@ class M_Transactions :
         mycursor.execute("SELECT * FROM `Transactions` WHERE `maker_user_id` = "+str(user_id)+" AND `tx_type` = 'wallet+' AND `tx_type` = 'wallet-' LIMIT "+str(page)+" OFFSET "+str(pageSize))
         return mycursor.fetchall()
 
-    def MakeBidCore(self, user_data, item_id, bid_amount):
-        # getting user status:
-        user_id = user_data[0][0]
-        user_status = user_data[0][9]
-        # is user banned
-        banned = config.isFlagActive(user_status, config.constants.FLAG_BANNED)
-        if banned:
-            config.ReturnJsonError("Banned user cannot bid")
-        # getting user wallet:
-        res = self.db.Select('Wallet',"`user_id` = "+str(user_id))
-        user_wallet = res[0]
-        user_total_balance = user_wallet[4]
-        # check user balance and user requested bid:
-        if ( bid_amount <= 0 or bid_amount>user_total_balance):
-            config.ReturnJsonError("bid amount should be geater than 0 and should not exceed the balance")
+    def MakeBidCore(self, user_id, item_id, bid_amount, user_total_balance):
         # passed all tests successfully
         ts = int(time.time() * 1000)
         cols = ["id"    ,"tx_type"  ,"amount"   ,"status","timestamp","maker_user_id","taker_user_id","item_id"]
         vals = ["NULL"  ,"bid"      , str(bid_amount),"4"     , str(ts)        , str(user_id)       , str(0)             ,str(item_id)]
         self.db.Insert("Transactions",cols,vals)
-        # continue here
-        # deduct bid from balance
-        new_balance = user_total_balance - bid_amount
-        self.db.Update('Wallet','total_balance',new_balance,"`user_id` = "+str(user_id))
-        return {
-            "success": True,
-            "message": "bid placed for that item"
-        }
 
 

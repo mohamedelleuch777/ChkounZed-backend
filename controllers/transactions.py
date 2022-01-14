@@ -6,6 +6,7 @@ class Transactions( config.Controller ) :
         self.cM_Transactions = config.importModule("models/M_Transactions").M_Transactions()
         self.cM_Users = config.importModule("models/M_Users").M_Users()
         self.cM_Items = config.importModule("models/M_Items").M_Items()
+        self.cM_Wallets = config.importModule("models/M_Wallets").M_Wallets()
         
     def run(self):
         return config.REQUEST_ARGS
@@ -37,10 +38,29 @@ class Transactions( config.Controller ) :
         item_id = args['item_id']
         bid_amount = args['bid_amount']
         user = self.cM_Users.GetUserData(id)
+        # getting user status and id:
+        user_id = user[0][0]
+        user_status = user[0][9]
         item_accept_bids = self.cM_Items.DoesItemAcceptBid(item_id)
+        balance = self.cM_Wallets.GetUserBalance(user_id)
+        # is user banned
+        banned = config.isFlagActive(user_status, config.constants.FLAG_BANNED)
+        if banned:
+            config.ReturnJsonError("Banned user cannot bid")
         if not item_accept_bids:
             config.ReturnJsonError("This item does not accept bids at the moment")
         if len(user)==0: 
             config.ReturnJsonError("Error while reading user data")
-        return self.cM_Transactions.MakeBidCore(user,item_id,bid_amount)
+        # check user balance and user requested bid:
+        if ( bid_amount <= 0 or bid_amount>balance):
+            config.ReturnJsonError("bid amount should be geater than 0 and should not exceed the balance")
+        # call make bid core function
+        self.cM_Transactions.MakeBidCore(user_id,item_id,bid_amount,balance)
+        # deduct bid from balance
+        new_balance = balance - bid_amount
+        self.cM_Wallets.SetUserBalance(str(user_id),str(new_balance))
+        return {
+            "success": True,
+            "message": "bid placed for that item"
+        }
         
