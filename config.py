@@ -105,7 +105,7 @@ class Controller:
                 return bearerToken.split(' ')[1]
             else:
                 
-                ReturnJsonError(parsedError,401)
+                ReturnJsonError("parsedError",401)
         except:
             # fix this function
             # php.run("http_response_code(401);die;")
